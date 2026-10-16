@@ -52,7 +52,7 @@ batalha-naval/
 
 ## 🚧 Status do projeto
 
-Em desenvolvimento.
+Projeto em desenvolvimento.
 
 ## 👨‍💻 Autor
 
