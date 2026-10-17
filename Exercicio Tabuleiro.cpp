@@ -7,7 +7,7 @@ int posicionarSubmarino(int posicaoArtefato, int lin, int col);
 int posicionarNavio(int posicaoArtefato, int lin, int col);
 int posicionarPortaAviao(int posicaoArtefato, int lin, int col);
 int lancarMissel();
-int verificarAfundou(int artefato);
+int verificarAfundou(int artefato, int posicaoArtefato);
 void exibirPosicao();
 void iniciarTabuleiroJogador();
 void exibirTabuleiroJogador();
@@ -15,45 +15,55 @@ void linha();
 
 //variaveis globais
 int tabuleiro[10][10];
-int posicao[3][2];
+int posicao[4][2];
 int tabuleiroJogador[10][10];
 int cont = 0;
 int artefatosAfundados[4];
+int posicaoArtefato[4][2];
 
 main() {
-	printf("-----INICIANDO BATALHA NAVAL-----\n\n");
-	printf("        Item        Qtd Pecas    \n");
-	printf("     ------------------------    \n");
-	printf("        Barco           2        \n");
-	printf("        Navio           6        \n");
-	printf("      Porta Aviao       5        \n");
-	printf("       Submarino        4        \n\n");
+	printf("-------INICIANDO BATALHA NAVAL-------\n\n");
+	printf("  Indice      Item        Qtd Pecas \n");
+	printf("-------------------------------------\n");
+	printf("    1         Barco           2        \n");
+	printf("    2       submarino         4        \n");
+	printf("    3         navio           6        \n");
+	printf("    4      Porta Aviao        5        \n\n");
 	
 	
 		
-	int artefato, posicao, lin, col;
-	for(int i = 0; i<=3; i++) {
-	
-		printf("Qual artefato deseja adicionar: "); scanf("%i", &artefato);
+	int posicao, lin, col;
+	printf("---Posicao artefato---\n");
+	printf("1 - A direita\n");
+	printf("2 - A esquerda\n");
+	printf("3 - Para baixo\n");
+	printf("4 - Para cima\n\n");
+	for(int i = 1; i <= 4; i++){
 		printf("Qual posicao voce quer que ele fique: "); scanf("%i", &posicao);
 		printf("Em qual linha deseja adicionar o artefato: "); scanf("%i", &lin);
 		printf("Em qual colouna deseja posicionar o artefato: "); scanf("%i", &col);
-		
-		switch(artefato){
+		linha();
+		switch(i){
 			case 1:
+				printf("Posicionando Barco.\n");
 				posicionarBarco(posicao, lin, col);
 				break;
 			case 2:
+				printf("Posicionando Submarino.\n");
 				posicionarSubmarino(posicao, lin, col);
 				break;
 			case 3:
+				printf("Posicionando Navio.\n");
 				posicionarNavio(posicao, lin, col);
 				break;
 			case 4:
+				printf("Posicionando Porta Aviao.\n");
 				posicionarPortaAviao(posicao, lin, col);
 				break;
 		}
 	}
+	exibirTabuleiro();
+	
 	iniciarTabuleiroJogador();
 	exibirTabuleiroJogador();
 	int resp;
@@ -63,41 +73,11 @@ main() {
 		cont++;
 		linha();
 		exibirTabuleiroJogador();
-
-		if(artefatosAfundados[0] != 1) {
-			verificarAfundou(1);
-		}
-		if(artefatosAfundados[1] != 2) {
-			verificarAfundou(2);
-		}
-		if(artefatosAfundados[2] != 3) {
-			verificarAfundou(3);
-		}
-		if(artefatosAfundados[3] != 4) {
-			verificarAfundou(4);
-		}
-		linha();
 		for(int i = 0; i <= 3; i++) {
-			if(artefatosAfundados[i] != 0) {
-				if(i == 0) {
-					printf("Barco Afundado!\n");
-				}
-				if(i == 1) {
-					printf("Submarino Afundado!\n");
-				}
-				if(i == 2) {
-					printf("Navio Afundado!\n");
-				}
-				if(i == 3) {
-					printf("Porta Aviao Afundado!\n");
-				}
+			if(artefatosAfundados[i] != i+1) {
+				verificarAfundou(i+1, posicao);
 			}
-		}
-		printf("\n\n");
-		if(artefatosAfundados[0] == 1 && artefatosAfundados[1] == 2 && artefatosAfundados[2] == 3 && artefatosAfundados[3] == 4) {
-			printf("PARABENS! Voce ganhou!\n");
-			printf("Voce usou %i Misseis", cont);
-			break;
+			
 		}
 	}
 	linha();
@@ -179,7 +159,7 @@ int posicionarBarco(int posicaoArtefato, int lin, int col) {
 				return 0;
 			}
 		case 3: //posicionando artefato para baixo
-			if(col <= 9 && col >= 0 && lin <= 9 && lin >= 1) {
+			if(col <= 9 && col >= 0 && lin <= 8 && lin >= 0) {
 				tabuleiro[lin][col]=1;
 				tabuleiro[lin+1][col]=1;
 				return 1;
@@ -188,7 +168,7 @@ int posicionarBarco(int posicaoArtefato, int lin, int col) {
 				return 0;
 			}
 		case 4: //posicionando artefato para cima
-			if(col <= 9 && col >= 0 && lin <= 8 && lin >= 0) {
+			if(col <= 9 && col >= 0 && lin <= 9 && lin >= 1) {
 				tabuleiro[lin][col]=1;
 				tabuleiro[lin-1][col]=1;
 				return 1;
@@ -206,7 +186,7 @@ int posicionarSubmarino(int posicaoArtefato, int lin, int col) {
 	posicao[aux][1]=col;
 	switch(posicaoArtefato) {
 		case 1: //posicionando artefato para direita
-			if(col <= 7 && col >= 0 && lin <= 8 && lin >= 1) {
+			if(col <= 7 && col >= 0 && lin <= 9 && lin >= 1) {
 				tabuleiro[lin][col]=2;
 				tabuleiro[lin-1][col]=2;
 				tabuleiro[lin][col+1]=2;
@@ -218,7 +198,7 @@ int posicionarSubmarino(int posicaoArtefato, int lin, int col) {
 			}
 			break;
 		case 2: //posicionando artefato a esquerda
-			if(col >= 2 && col <= 9 && lin >= 1 && lin <= 9) {
+			if(col >= 2 && col <= 9 && lin >= 0 && lin <= 8) {
 				tabuleiro[lin][col]=2;
 				tabuleiro[lin+1][col]=2;
 				tabuleiro[lin][col-1]=2;
@@ -277,7 +257,7 @@ int posicionarNavio(int posicaoArtefato, int lin, int col) {
 			}
 			break;
 		case 2: //posicionando artefato a esquerda
-			if(col >= 3 && col <= 9 && lin >= 1 && lin <= 9 ) {
+			if(col >= 3 && col <= 9 && lin >= 0 && lin <= 8 ) {
 				tabuleiro[lin][col]=3;
 				tabuleiro[lin][col-1]=3;
 				tabuleiro[lin+1][col-1]=3;
@@ -409,45 +389,202 @@ int lancarMissel() {
 	}
 }
 
-int verificarAfundou(int artefato) {
+
+
+int verificarAfundou(int artefato, int posicaoArtefato) {
 	switch(artefato) {
-		case 1 :
-			if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9) {
-				artefatosAfundados[0] = 1;
-				return 1;
+		case 1 : // Barco
+			if(artefatosAfundados[0] != 1) {
+				switch(posicaoArtefato) {
+					case 1: // a direita
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9) {
+							artefatosAfundados[0] = 1;
+							printf("Barco Afundou!\n");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 2: // a esquerda
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-1] == 9) {
+							artefatosAfundados[0] = 1;
+							printf("Barco Afundou!\n");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 3: //para baixo
+						if(tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9) {
+							artefatosAfundados[0] = 1;
+							printf("Barco Afundou!\n");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 4: // para cima
+						if(tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9) {
+							artefatosAfundados[0] = 1;
+							printf("Barco Afundou!\n");
+							return 1;
+						} else {
+							return 0;
+						}
+				}
 			} else {
-				return 0;
+				printf("Barco Afundado!");
 			}
 			break;
-		case 2:
-			if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 &&  tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 &&
-			        tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+2] == 9) {
-				artefatosAfundados[1] = 2;
-				return 1;
+		case 2: // Submarino
+			if(artefatosAfundados[1] != 2) {
+				switch(posicaoArtefato) {
+					case 1: // a direita
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 &&  tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+2] == 9) {
+							artefatosAfundados[1] = 2;
+							printf("Submarino Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 2: // a esquerda
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 &&  tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-2] == 9) {
+							artefatosAfundados[1] = 2;
+							printf("Submarino Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 3: // para baixo
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 &&  tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]+2][posicao[artefato][1]] == 9) {
+							artefatosAfundados[1] = 2;
+							printf("Submarino Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 4: // a esquerda
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 &&  tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-1] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]-2][posicao[artefato][1]] == 9) {
+							artefatosAfundados[1] = 2;
+							printf("Submarino Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+				}
 			} else {
-				return 0;
+				printf("Submarino Afundado!");
 			}
 			break;
-		case 3:
-			if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 1] == 9 &&
-			        tabuleiroJogador[posicao[artefato][0] - 1][posicao[artefato][1] + 1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 2] == 9 &&
-			        tabuleiroJogador[posicao[artefato][0] - 1][posicao[artefato][1] + 2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 3] ==  9) {
-				artefatosAfundados[2] = 3;
-				return 1;
+		case 3: // Navio
+			if(artefatosAfundados[2] != 3) {
+				switch(posicaoArtefato) {
+					case 1: // a direita
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]+1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+2] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]+2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+3] ==  9) {
+							artefatosAfundados[2] = 3;
+							printf("Navio Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 2: // a esquerda
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-1] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]-1] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-2] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]-2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-3] ==  9) {
+							artefatosAfundados[2] = 3;
+							printf("Navio Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 3: // para baixo
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]+1] == 9 && tabuleiroJogador[posicao[artefato][0]+2][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]+2][posicao[artefato][1]+1] == 9 && tabuleiroJogador[posicao[artefato][0]+3][posicao[artefato][1]] ==  9) {
+							artefatosAfundados[2] = 3;
+							printf("Navio Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 4: // para cima
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]-1] == 9 && tabuleiroJogador[posicao[artefato][0]-2][posicao[artefato][1]] == 9 &&
+				        tabuleiroJogador[posicao[artefato][0]-2][posicao[artefato][1]-1] == 9 && tabuleiroJogador[posicao[artefato][0]-3][posicao[artefato][1]] ==  9) {
+							artefatosAfundados[2] = 3;
+							printf("Navio Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+				}
 			} else {
-				return 0;
+				printf("Navio Afundado!");
 			}
 			break;
-		case 4:
-			if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 1] == 9 &&
-			        tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 3] == 9 &&
-			        tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1] + 4] == 9) {
-				artefatosAfundados[3] = 4;
-				return 1;
+		case 4: // Porta Aviao
+			if(artefatosAfundados[3] != 4){
+				switch(posicaoArtefato){
+					case 1: // a direita
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+1] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+3] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]+4] == 9) {
+							artefatosAfundados[3] = 4;
+							printf("Porta Aviao Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 2: // a esquerda
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-1] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-2] == 9 && tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-3] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]-4] == 9) {
+							artefatosAfundados[3] = 4;
+							printf("Porta Aviao Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 3: // para baixo
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]+1][posicao[artefato][1]] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]+2][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]+3][posicao[artefato][1]] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]+4][posicao[artefato][1]] == 9) {
+							artefatosAfundados[3] = 4;
+							printf("Porta Aviao Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+						break;
+					case 4: // para cima
+						if(tabuleiroJogador[posicao[artefato][0]][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]-1][posicao[artefato][1]] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]-2][posicao[artefato][1]] == 9 && tabuleiroJogador[posicao[artefato][0]-3][posicao[artefato][1]] == 9 &&
+						tabuleiroJogador[posicao[artefato][0]-4][posicao[artefato][1]] == 9) {
+							artefatosAfundados[3] = 4;
+							printf("Porta Aviao Afundou!");
+							return 1;
+						} else {
+							return 0;
+						}
+				}
 			} else {
-				return 0;
+				printf("Porta Aviao Afundado!");
 			}
-			break;
+		break;			
 	}
 }
 
@@ -460,5 +597,4 @@ void exibirPosicao() {
 	}
 	printf("\n\n");
 }
-
 
